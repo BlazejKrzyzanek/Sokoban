@@ -60,7 +60,7 @@ LevelMenu::~LevelMenu() {
 
 }
 
-void LevelMenu::MoveLeft() {
+void LevelMenu::moveLeft() {
 	if (selectedLevel - 1 >= 0) {
 		levelNumbers[selectedLevel].setFillColor(Color::Black);
 		levels[selectedLevel].setTexture(squareTexture);
@@ -70,7 +70,7 @@ void LevelMenu::MoveLeft() {
 	}
 }
 
-void LevelMenu::MoveRight() {
+void LevelMenu::moveRight() {
 	if (selectedLevel + 1 < NUMBER_OF_LEVELS) {
 		levelNumbers[selectedLevel].setFillColor(Color::Black);
 		levels[selectedLevel].setTexture(squareTexture);
@@ -80,7 +80,7 @@ void LevelMenu::MoveRight() {
 	}
 }
 
-void LevelMenu::MoveUp() {
+void LevelMenu::moveUp() {
 	if (selectedLevel - 4 >= 0) {
 		levelNumbers[selectedLevel].setFillColor(Color::Black);
 		levels[selectedLevel].setTexture(squareTexture);
@@ -90,7 +90,7 @@ void LevelMenu::MoveUp() {
 	}
 }
 
-void LevelMenu::MoveDown() {
+void LevelMenu::moveDown() {
 	if (selectedLevel + 4 < NUMBER_OF_LEVELS) {
 		levelNumbers[selectedLevel].setFillColor(Color::Black);
 		levels[selectedLevel].setTexture(squareTexture);
@@ -100,7 +100,7 @@ void LevelMenu::MoveDown() {
 	}
 }
 
-int LevelMenu::Press() {
+int LevelMenu::press() {
 	return selectedLevel;
 }
 
@@ -109,4 +109,42 @@ void LevelMenu::draw(RenderWindow &window) {
 	for (auto x : levels) window.draw(x);
 	for (auto x : levelNumbers) window.draw(x);
 
+}
+
+int LevelMenu::run(RenderWindow &window) {
+	Event event;
+	while (window.pollEvent(event)) {
+		switch (event.type) {
+		case Event::Closed: // exit handling
+			window.close();
+			break;
+		case Event::KeyReleased: // Moving through levels
+			switch (event.key.code) {
+			case(Keyboard::Left):
+				moveLeft();
+				break;
+			case(Keyboard::Right):
+				moveRight();
+				break;
+			case(Keyboard::Up):
+				moveUp();
+				break;
+			case(Keyboard::Down):
+				moveDown();
+				break;
+			case(Keyboard::Space):
+				return press();
+				break;
+			case(Keyboard::Return):
+				return press();
+				break;
+			default:
+				break;
+			}
+		default:
+			break;
+		}
+	}
+	draw(window);
+	return -1;
 }

@@ -223,6 +223,7 @@ void Level::CreateMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++) {
 			levelMatrix[i][j] = matrix[i][j];
+			saveMatrix[i][j] = matrix[i][j];
 			Vector2f pos = Vector2f(i * 50, j * 50);
 			switch (levelMatrix[i][j]) {
 			case 0:
@@ -288,6 +289,24 @@ int Level::run(RenderWindow &window) {
 				break;
 			case(Keyboard::Down):
 				MoveDown();
+				break;
+			case(Keyboard::A):
+				MoveLeft();
+				break;
+			case(Keyboard::D):
+				MoveRight();
+				break;
+			case(Keyboard::W):
+				MoveUp();
+				break;
+			case(Keyboard::S):
+				MoveDown();
+				break;
+			case(Keyboard::R):
+				CreateMatrix(saveMatrix);
+				break;
+			case(Keyboard::Escape):
+				return 2;
 				break;
 			default:
 				break;

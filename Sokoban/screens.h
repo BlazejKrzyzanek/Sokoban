@@ -14,13 +14,16 @@ public:
 	Menu(int width, int height);
 	~Menu();
 
-	void draw(RenderWindow &window);
-	void MoveUp();
-	void MoveDown();
-	int Press();
-	int selectedItemIndex;
+	int run(RenderWindow &window);
 
 private:
+	void draw(RenderWindow &window);
+	void moveUp();
+	void moveDown();
+	int press();
+	void noPress();
+	int selectedItemIndex;
+
 	Font font;
 	Texture buttonTexture;
 	Texture buttonSelectedTexture;
@@ -39,23 +42,53 @@ public:
 	LevelMenu(int width, int height);
 	~LevelMenu();
 
+	int run(RenderWindow &window);
+
+private:
 	void draw(RenderWindow &window);
 
 	// Motion in menu
-	void MoveLeft();
-	void MoveRight();
-	void MoveUp();
-	void MoveDown();
-	int Press();
+	void moveLeft();
+	void moveRight();
+	void moveUp();
+	void moveDown();
+	int press();
 
 	int selectedLevel;
 
-private:
 	Font font;
 	Texture squareTexture;
 	Texture squareSelectedTexture;
 	Texture backgroundTexture;
 	Text levelNumbers[NUMBER_OF_LEVELS];
 	Sprite levels[NUMBER_OF_LEVELS];
+	Sprite background;
+};
+
+class PauseMenu
+{
+public:
+	PauseMenu(int width, int height);
+	~PauseMenu();
+
+	int run(RenderWindow &window);
+
+private:
+	void draw(RenderWindow &window);
+	void moveUp();
+	void moveDown();
+	int press();
+	void noPress();
+	int selectedItemIndex;
+
+	Font font;
+	Texture buttonTexture;
+	Texture buttonSelectedTexture;
+	Texture buttonPressedTexture;
+	Texture sokobanLogoTexture;
+	Texture backgroundTexture;
+	Text menu[MAX_NUMBER_OF_ITEMS];
+	Sprite buttons[MAX_NUMBER_OF_ITEMS];
+	Sprite logo;
 	Sprite background;
 };

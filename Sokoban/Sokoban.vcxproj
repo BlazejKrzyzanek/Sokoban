@@ -153,10 +153,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="createLevel.cpp" />
     <ClCompile Include="levelMenu.cpp" />
     <ClCompile Include="levels.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="pauseMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="levels.h" />
