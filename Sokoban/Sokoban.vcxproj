@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="createLevel.cpp" />
+    <ClCompile Include="levelCreator.cpp" />
     <ClCompile Include="levelMenu.cpp" />
     <ClCompile Include="levels.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="pauseMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="levelCreator.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="screens.h" />
   </ItemGroup>

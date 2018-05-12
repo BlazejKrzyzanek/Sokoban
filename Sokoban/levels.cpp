@@ -14,14 +14,21 @@ Level::Level(int width, int height) {
 	if (!placeTexture.loadFromFile("Textures/place.png")) {
 		// handle error
 	}
+	if (!brickTexture.loadFromFile("Textures/brick.png")) {
+		// handle error
+	}
 	if (!playerTexture.loadFromFile("Textures/player.png")) {
 		// handle error
 	}
 	if (!backgroundTexture.loadFromFile("Textures/background.png")) {
 		// handle error
 	}
-
-	background.setTexture(backgroundTexture);
+	if (!congratsTexture.loadFromFile("Textures/congrats.png")) {
+		// handle error
+	}
+	if (!keysTexture.loadFromFile("Textures/keys.png")) {
+		// handle error
+	}
 }
 
 
@@ -30,7 +37,7 @@ Level::~Level() {
 }
 
 
-void Level::MoveLeft() {
+void Level::moveLeft() {
 	// Normal path or place
 	int x = position[0];
 	int y = position[1];
@@ -78,7 +85,7 @@ void Level::MoveLeft() {
 }
 
 
-void Level::MoveRight() {
+void Level::moveRight() {
 	// Normal path or place
 	int x = position[0];
 	int y = position[1];
@@ -125,7 +132,7 @@ void Level::MoveRight() {
 }
 
 
-void Level::MoveUp() {
+void Level::moveUp() {
 	// Normal path or place
 	int x = position[0];
 	int y = position[1];
@@ -172,7 +179,7 @@ void Level::MoveUp() {
 }
 
 
-void Level::MoveDown() {
+void Level::moveDown() {
 	// Normal path or place
 	int x = position[0];
 	int y = position[1];
@@ -218,8 +225,19 @@ void Level::MoveDown() {
 	}
 }
 
+void Level::read(int matrix[MATRIX_X][MATRIX_Y]) {
+	for (int i = 0; i < MATRIX_X; i++)
+		for (int j = 0; j < MATRIX_Y; j++) {
+			saveMatrix[i][j] = matrix[i][j];
+		}
+}
 
-void Level::CreateMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
+
+void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
+	background.setTexture(backgroundTexture);
+	congrats.setTexture(congratsTexture);
+	keys.setTexture(keysTexture);
+
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++) {
 			levelMatrix[i][j] = matrix[i][j];
@@ -263,6 +281,8 @@ void Level::CreateMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 				position[0] = i;
 				position[1] = j;
 			}
+			default:
+				break;
 			}
 		}
 			
@@ -271,58 +291,89 @@ void Level::CreateMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 
 int Level::run(RenderWindow &window) {
 	Event event;
-	while (window.pollEvent(event)) {
-		switch (event.type) {
-		case Event::Closed: // exit handling
-			window.close();
-			break;
-		case Event::KeyReleased: // Moving
-			switch (event.key.code) {
-			case(Keyboard::Left):
-				MoveLeft();
-				break;
-			case(Keyboard::Right):
-				MoveRight();
-				break;
-			case(Keyboard::Up):
-				MoveUp();
-				break;
-			case(Keyboard::Down):
-				MoveDown();
-				break;
-			case(Keyboard::A):
-				MoveLeft();
-				break;
-			case(Keyboard::D):
-				MoveRight();
-				break;
-			case(Keyboard::W):
-				MoveUp();
-				break;
-			case(Keyboard::S):
-				MoveDown();
-				break;
-			case(Keyboard::R):
-				CreateMatrix(saveMatrix);
-				break;
-			case(Keyboard::Escape):
-				return 2;
-				break;
-			default:
-				break;
-			}
-		}
-	}
+	congrats.setPosition(Vector2f(window.getSize().x / 2 - congrats.getGlobalBounds().width / 2, window.getSize().y / 2 - congrats.getGlobalBounds().height / 2));
+	keys.setPosition(Vector2f(0, window.getSize().y - keys.getGlobalBounds().height));
+	int state = gameState(window);
 	window.draw(background);
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++)
 			window.draw(gameMatrix[i][j]);
 	window.draw(player);
-	return GameState();
+	window.draw(keys);
+
+	if (state == 0) {
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case Event::Closed: // exit handling
+				window.close();
+				break;
+			case Event::KeyReleased: // Moving
+				switch (event.key.code) {
+				case(Keyboard::Left):
+					moveLeft();
+					break;
+				case(Keyboard::Right):
+					moveRight();
+					break;
+				case(Keyboard::Up):
+					moveUp();
+					break;
+				case(Keyboard::Down):
+					moveDown();
+					break;
+				case(Keyboard::A):
+					moveLeft();
+					break;
+				case(Keyboard::D):
+					moveRight();
+					break;
+				case(Keyboard::W):
+					moveUp();
+					break;
+				case(Keyboard::S):
+					moveDown();
+					break;
+				case(Keyboard::R):
+					createMatrix(saveMatrix);
+					break;
+				case(Keyboard::Escape):
+					return 2;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	if (state == 1) {
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case Event::Closed: // exit handling
+				window.close();
+				break;
+			case Event::KeyReleased: // Moving
+				switch (event.key.code) {
+				case(Keyboard::Space):
+					return 1;
+					break;
+				case(Keyboard::Escape):
+					return 2;
+					break;
+				case(Keyboard::R):
+					createMatrix(saveMatrix);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		window.draw(congrats);
+		return 0;
+	}	
 }
 
 
-int Level::GameState() {
+int Level::gameState(RenderWindow &window) {
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++)
 			if (levelMatrix[i][j] == 3)

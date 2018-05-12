@@ -12,33 +12,36 @@ class Level
 {
 public:
 	
-	Level(int width=1200, int height=800);
+	Level(int width, int height);
 	~Level();
-	int run(RenderWindow &window);
-
-	void CreateMatrix(int matrix[MATRIX_X][MATRIX_Y]);
-
-	int GameState();
-
+	int run(RenderWindow &window); // runing level
+	int saveMatrix[MATRIX_X][MATRIX_Y]; // level matrix save for reset
+	void createMatrix(int matrix[MATRIX_X][MATRIX_Y]); // create sprites
+	void read(int matrix[MATRIX_X][MATRIX_Y]); // read level
 private:
+	int gameState(RenderWindow &window);
 	// Motion
-	void MoveLeft();
-	void MoveRight();
-	void MoveUp();
-	void MoveDown();
-
+	void moveLeft();
+	void moveRight();
+	void moveUp();
+	void moveDown();
 	int position[2];
 	int levelMatrix[MATRIX_X][MATRIX_Y];
-	int saveMatrix[MATRIX_X][MATRIX_Y];
+
 	Texture pathTexture;
 	Texture cargoTexture;
 	Texture deliveredTexture;
 	Texture playerTexture;
 	Texture placeTexture;
+	Texture brickTexture;
 	Texture backgroundTexture;
+	Texture congratsTexture;
+	Texture keysTexture;
 	Sprite gameMatrix[MATRIX_X][MATRIX_Y];
 	Sprite player;
 	Sprite background;
+	Sprite congrats;
+	Sprite keys;
 };
 
 void createLevel(std::vector<Level> &levels, std::string filename, RenderWindow &window);

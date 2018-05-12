@@ -13,9 +13,7 @@ class Menu {
 public:
 	Menu(int width, int height);
 	~Menu();
-
 	int run(RenderWindow &window);
-
 private:
 	void draw(RenderWindow &window);
 	void moveUp();
@@ -23,7 +21,6 @@ private:
 	int press();
 	void noPress();
 	int selectedItemIndex;
-
 	Font font;
 	Texture buttonTexture;
 	Texture buttonSelectedTexture;
@@ -41,21 +38,16 @@ class LevelMenu {
 public:
 	LevelMenu(int width, int height);
 	~LevelMenu();
-
 	int run(RenderWindow &window);
-
 private:
 	void draw(RenderWindow &window);
-
 	// Motion in menu
 	void moveLeft();
 	void moveRight();
 	void moveUp();
 	void moveDown();
 	int press();
-
 	int selectedLevel;
-
 	Font font;
 	Texture squareTexture;
 	Texture squareSelectedTexture;
@@ -70,9 +62,7 @@ class PauseMenu
 public:
 	PauseMenu(int width, int height);
 	~PauseMenu();
-
 	int run(RenderWindow &window);
-
 private:
 	void draw(RenderWindow &window);
 	void moveUp();
@@ -80,7 +70,6 @@ private:
 	int press();
 	void noPress();
 	int selectedItemIndex;
-
 	Font font;
 	Texture buttonTexture;
 	Texture buttonSelectedTexture;

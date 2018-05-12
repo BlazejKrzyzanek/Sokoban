@@ -26,7 +26,10 @@ LevelMenu::LevelMenu(int width, int height) {
 		levels[i].setTexture(squareTexture);
 		// Create numbers of levels
 		std::stringstream number;
-		number << i + 1;
+		if (i == NUMBER_OF_LEVELS -1)
+			number << "custom";
+		else
+			number << i + 1;
 		std::string s = number.str();
 		levelNumbers[i].setFont(font);
 		levelNumbers[i].setFillColor(Color::Black);
@@ -47,7 +50,6 @@ LevelMenu::LevelMenu(int width, int height) {
 			x = (width / 5) * (i + 1 - NUMBER_OF_LEVELS / 3);
 		else
 			x = (width / 5) * (i + 1 - 2 * NUMBER_OF_LEVELS / 3);
-
 		levels[i].setPosition(Vector2f(x - levels[i].getGlobalBounds().width / 2, y - levels[i].getGlobalBounds().height / 2));
 		levelNumbers[i].setPosition(Vector2f(x - levelNumbers[i].getGlobalBounds().width / 2, y - levelNumbers[i].getGlobalBounds().height / 2));
 	}
@@ -138,6 +140,9 @@ int LevelMenu::run(RenderWindow &window) {
 			case(Keyboard::Return):
 				return press();
 				break;
+			case(Keyboard::Escape):
+				return -2; // comes back to normal menu
+				break; 
 			default:
 				break;
 			}
