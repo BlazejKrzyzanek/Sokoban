@@ -37,6 +37,7 @@ private:
 	Texture backgroundTexture;
 	Texture congratsTexture;
 	Texture keysTexture;
+	Texture emptyTexture;
 	Sprite gameMatrix[MATRIX_X][MATRIX_Y];
 	Sprite player;
 	Sprite background;

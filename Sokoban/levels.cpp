@@ -2,40 +2,21 @@
 
 Level::Level(int width, int height) {
 	// load textures
-	if (!pathTexture.loadFromFile("Textures/path.png")) {
-		// handle error
-	}
-	if (!cargoTexture.loadFromFile("Textures/cargo.png")) {
-		// handle error
-	}
-	if (!deliveredTexture.loadFromFile("Textures/delivered.png")) {
-		// handle error
-	}
-	if (!placeTexture.loadFromFile("Textures/place.png")) {
-		// handle error
-	}
-	if (!brickTexture.loadFromFile("Textures/brick.png")) {
-		// handle error
-	}
-	if (!playerTexture.loadFromFile("Textures/player.png")) {
-		// handle error
-	}
-	if (!backgroundTexture.loadFromFile("Textures/background.png")) {
-		// handle error
-	}
-	if (!congratsTexture.loadFromFile("Textures/congrats.png")) {
-		// handle error
-	}
-	if (!keysTexture.loadFromFile("Textures/keys.png")) {
-		// handle error
-	}
+	pathTexture.loadFromFile("Textures/path.png");
+	cargoTexture.loadFromFile("Textures/cargo.png");
+	deliveredTexture.loadFromFile("Textures/delivered.png");
+	placeTexture.loadFromFile("Textures/place.png");
+	brickTexture.loadFromFile("Textures/brick.png");
+	playerTexture.loadFromFile("Textures/player.png");
+	backgroundTexture.loadFromFile("Textures/background.png");
+	congratsTexture.loadFromFile("Textures/congrats.png");
+	keysTexture.loadFromFile("Textures/keys.png");
+	emptyTexture.loadFromFile("Textures/empty.png");
 }
-
 
 Level::~Level() {
 
 }
-
 
 void Level::moveLeft() {
 	// Normal path or place
@@ -84,7 +65,6 @@ void Level::moveLeft() {
 	
 }
 
-
 void Level::moveRight() {
 	// Normal path or place
 	int x = position[0];
@@ -131,7 +111,6 @@ void Level::moveRight() {
 	}
 }
 
-
 void Level::moveUp() {
 	// Normal path or place
 	int x = position[0];
@@ -177,7 +156,6 @@ void Level::moveUp() {
 		position[1]--;
 	}
 }
-
 
 void Level::moveDown() {
 	// Normal path or place
@@ -232,7 +210,6 @@ void Level::read(int matrix[MATRIX_X][MATRIX_Y]) {
 		}
 }
 
-
 void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 	background.setTexture(backgroundTexture);
 	congrats.setTexture(congratsTexture);
@@ -245,32 +222,31 @@ void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 			Vector2f pos = Vector2f(i * 50, j * 50);
 			switch (levelMatrix[i][j]) {
 			case 0:
+				gameMatrix[i][j].setTexture(emptyTexture);
+				gameMatrix[i][j].setScale(0.5, 0.5);
+				gameMatrix[i][j].setPosition(pos);
 				break;
-			case 1: {
+			case 1:
 				gameMatrix[i][j].setTexture(pathTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
-			}
-			case 2: {
+			case 2:
 				gameMatrix[i][j].setTexture(cargoTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
-			}
-			case 3: {
+			case 3:
 				gameMatrix[i][j].setTexture(placeTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
-			}
-			case 4: {
+			case 4:
 				gameMatrix[i][j].setTexture(deliveredTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
-			}
-			case 5: {
+			case 5:
 				levelMatrix[i][j] = 1;
 				gameMatrix[i][j].setTexture(pathTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
@@ -280,7 +256,6 @@ void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 				player.setPosition(pos);
 				position[0] = i;
 				position[1] = j;
-			}
 			default:
 				break;
 			}
@@ -288,10 +263,10 @@ void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 			
 }
 
-
 int Level::run(RenderWindow &window) {
 	Event event;
-	congrats.setPosition(Vector2f(window.getSize().x / 2 - congrats.getGlobalBounds().width / 2, window.getSize().y / 2 - congrats.getGlobalBounds().height / 2));
+	congrats.setPosition(Vector2f(window.getSize().x / 2 - congrats.getGlobalBounds().width / 2,
+		window.getSize().y / 2 - congrats.getGlobalBounds().height / 2));
 	keys.setPosition(Vector2f(0, window.getSize().y - keys.getGlobalBounds().height));
 	int state = gameState(window);
 	window.draw(background);
@@ -333,10 +308,10 @@ int Level::run(RenderWindow &window) {
 				case(Keyboard::S):
 					moveDown();
 					break;
-				case(Keyboard::R):
+				case(Keyboard::R): // Restart
 					createMatrix(saveMatrix);
 					break;
-				case(Keyboard::Escape):
+				case(Keyboard::Escape): // Pause menu
 					return 2;
 					break;
 				default:
@@ -345,7 +320,7 @@ int Level::run(RenderWindow &window) {
 			}
 		}
 	}
-	if (state == 1) {
+	if (state == 1) {    // Winning
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case Event::Closed: // exit handling
@@ -359,7 +334,7 @@ int Level::run(RenderWindow &window) {
 				case(Keyboard::Escape):
 					return 2;
 					break;
-				case(Keyboard::R):
+				case(Keyboard::R):  // Restart
 					createMatrix(saveMatrix);
 					break;
 				default:
@@ -372,8 +347,7 @@ int Level::run(RenderWindow &window) {
 	}	
 }
 
-
-int Level::gameState(RenderWindow &window) {
+int Level::gameState(RenderWindow &window) { // Looking for "place"
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++)
 			if (levelMatrix[i][j] == 3)

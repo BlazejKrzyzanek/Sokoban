@@ -3,35 +3,29 @@
 #include "screens.h"
 #include "levels.h"
 #include "levelCreator.h"
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <ctime>
-
-#define MATRIX_X 24
-#define MATRIX_Y 16
 
 using namespace sf;
 using namespace std;
 
+#define WWIDTH 1200
+#define WHEIGHT 800
 
 int main(){
-	// Initialize screen and level
+	// Initialize screen and level numbers
 	int screen = 0;
-	int level = 0;
-	// Create game window
-	int wWidth = 1200;
-	int wHeight = 800;
-	RenderWindow app(VideoMode(wWidth, wHeight, 32), "Sokoban v. alpha 0.0 by B. Krzyzanek", Style::Titlebar | Style::Close);
+	int curLvl = 0;
+	// Create window
+	RenderWindow app(VideoMode(WWIDTH, WHEIGHT, 32),
+		"Sokoban v. alpha 0.1 by B. Krzyzanek",
+		Style::Titlebar | Style::Close);
 	app.setMouseCursorVisible(false);
 	app.setFramerateLimit(60); 
-
-	Menu menu(app.getSize().x, app.getSize().y);
+	// Create objects of screens
+	Menu menu(app.getSize().x, app.getSize().y, "Play", "Custom level", "Exit");
 	LevelMenu levelMenu(app.getSize().x, app.getSize().y);
-	PauseMenu pauseMenu(app.getSize().x, app.getSize().y);
+	Menu pauseMenu(app.getSize().x, app.getSize().y, "Continue", "Back to menu", "Exit");
 	LevelCreator levelCreator(app.getSize().x, app.getSize().y);
 	levelCreator.createMatrix("Levels/nullLevel.txt");
-
 	// Read levels from files
 	vector<Level> levels;
 	createLevel(levels, "Levels/level1.txt", app);
@@ -46,184 +40,49 @@ int main(){
 	createLevel(levels, "Levels/level10.txt", app);
 	createLevel(levels, "Levels/level11.txt", app);
 	createLevel(levels, "Levels/customLevel.txt", app);
-	for (int i =0; i < levels.size(); i++)
+	for (int i = 0; i < levels.size(); i++)
 		levels[i].createMatrix(levels[i].saveMatrix);
-
 	// Main game loop
 	while (app.isOpen()){
-			app.clear();
+			app.clear();  
 			switch (screen) {	
-			case 0: {// Menu screen
-				int state = menu.run(app);
-				if (state == 1)
-					screen = 1;
-				else if (state == 2)
-					screen = 2;
+			case 0: {												// Menu screen
+				int state = menu.run(app);							// Which button was pressed
+				if (state == 1) screen = 1;							//  -> Level choosing menu
+				else if (state == 2) screen = 2;					//  -> Level creator
+				else if (state == 3) app.close();
 				break;
 			}
-			case 1: { // Choose level screen
-				level = levelMenu.run(app);
-				if (level > -1) screen = 3;
-				else if (level == -2) screen = 0;
+			case 1:  												// Level choosing menu
+				curLvl = levelMenu.run(app);						// Selected level if space pressed
+				if (curLvl > -1) screen = 3;						// Display game level
+				else if (curLvl == -2) screen = 0;					// Go to previous menu if Esc pressed
+				break;
+			case 2: {												// Level Creator screen
+				int state = levelCreator.run(app, levels[11]);		// Which screen should be presented next
+				if (state == 0) screen = 0;							// Go to previous menu if Esc pressed
 				break;
 			}
-					// Level creator screen, just menu screen for a while -  will change it later
-			case 2: {
-				int state = levelCreator.run(app);
-				if (state == 2)
-					screen = 0;
-				break;
-			}// end of temporary settings screen
-					// Levels screen
-			case 3: {
-				switch (level) {
-				case 0: {
-					int state = levels[0].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
+			case 3: {												// Levels screen (with game)
+				int state = levels[curLvl].run(app);				// State of the game (0 - play, 1 - next level, 2 - pause)
+				if (state == 1 && curLvl < 11) curLvl++;			// Level to next if possible (after winning)
+				else if (state == 1 && curLvl == 11) {
+					curLvl = 0;										//  Level to first
+					screen = 0;										// -> Menu
 				}
-				case 1: {
-					int state = levels[1].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 2: {
-					int state = levels[2].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 3: {
-					int state = levels[3].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 4: {
-					int state = levels[4].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 5: {
-					int state = levels[5].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 6: {
-					int state = levels[6].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 7: {
-					int state = levels[7].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 8: {
-					int state = levels[8].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 9: {
-					int state = levels[9].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 10: {
-					int state = levels[10].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 11: {
-					int state = levels[11].run(app);
-					if (state == 1) {
-						level++;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-				case 12: {
-					int state = levels[12].run(app);
-					if (state == 1) {
-						level = 0;
-						screen = 0;
-					}
-					else if (state == 2) {
-						screen = 4;
-					}
-					break;
-				}
-
-				}
+				else if (state == 2) screen = 4;					// -> Pause
 				break;
 			}
-					// pause menu
-			case 4: {
-				int state = pauseMenu.run(app);
-				if (state == 1)
-					screen = 3;
-				else if (state == 2)
-					screen = 0;
-				break;
+			case 4: {	
+				int state = pauseMenu.run(app);							// Which button was pressed
+				if (state == 1) screen = 3;							//  -> Level choosing menu
+				else if (state == 2) screen = 0;					//  -> Level creator
+				else if (state == 3) app.close();
+				break;// Pause menu
 			}
 			}
 			
-			app.display();
+			app.display();											// display everything
 	}
 	return EXIT_SUCCESS;
 }

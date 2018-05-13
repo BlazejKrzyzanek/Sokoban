@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "levels.h"
 
 #define MATRIX_X 24
 #define MATRIX_Y 16
@@ -12,7 +13,7 @@ class LevelCreator
 {
 public:
 	LevelCreator(int width, int height);
-	int run(RenderWindow &window);
+	int run(RenderWindow &window, Level &customLevel);
 	void createMatrix(std::string filename);
 	~LevelCreator();
 
@@ -28,6 +29,7 @@ private:
 	Texture selectedTexture;
 	Texture emptyTexture;
 	int saveMatrix[MATRIX_X][MATRIX_Y];
+	int nullMatrix[MATRIX_X][MATRIX_Y];
 	int levelMatrix[MATRIX_X][MATRIX_Y];
 	int position[2];
 
@@ -41,6 +43,6 @@ private:
 	void moveUp();
 	void moveDown();
 	void write(int n);
-	void save();
+	void save(Level &customLevel);
 	
 };

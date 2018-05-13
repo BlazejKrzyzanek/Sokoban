@@ -1,4 +1,5 @@
 #include "levelCreator.h"
+#include "levels.h"
 #include <fstream>
 #include <iostream>
 
@@ -6,36 +7,17 @@
 LevelCreator::LevelCreator(int width, int height)
 {
 	// load textures
-	if (!pathTexture.loadFromFile("Textures/path.png")) {
-		// handle error
-	}
-	if (!cargoTexture.loadFromFile("Textures/cargo.png")) {
-		// handle error
-	}
-	if (!deliveredTexture.loadFromFile("Textures/delivered.png")) {
-		// handle error
-	}
-	if (!placeTexture.loadFromFile("Textures/place.png")) {
-		// handle error
-	}
-	if (!brickTexture.loadFromFile("Textures/brick.png")) {
-		// handle error
-	}
-	if (!playerTexture.loadFromFile("Textures/player.png")) {
-		// handle error
-	}
-	if (!backgroundTexture.loadFromFile("Textures/background.png")) {
-		// handle error
-	}
-	if (!keysTexture.loadFromFile("Textures/creator.png")) {
-		// handle error
-	}
-	if (!selectedTexture.loadFromFile("Textures/selected.png")) {
-		// handle error
-	}
-	if (!emptyTexture.loadFromFile("Textures/empty.png")) {
-		// handle error
-	}
+	pathTexture.loadFromFile("Textures/path.png");
+	cargoTexture.loadFromFile("Textures/cargo.png");
+	deliveredTexture.loadFromFile("Textures/delivered.png");
+	placeTexture.loadFromFile("Textures/place.png");
+	brickTexture.loadFromFile("Textures/brick.png");
+	playerTexture.loadFromFile("Textures/player.png");
+	backgroundTexture.loadFromFile("Textures/background.png");
+	keysTexture.loadFromFile("Textures/creator.png");
+	selectedTexture.loadFromFile("Textures/selected.png");
+	emptyTexture.loadFromFile("Textures/empty.png");
+
 	selected.setTexture(selectedTexture);
 	selected.setScale(0.5, 0.5);
 	selected.setPosition(width / 2, height / 2);
@@ -177,7 +159,7 @@ void LevelCreator::createMatrix(std::string filename) {
 	file.close();
 }
 
-void LevelCreator::save() {
+void LevelCreator::save(Level &customLevel) {
 	std::fstream file;
 	file.open("Levels/customLevel.txt", std::ios::out);
 	for (int i = 0; i < MATRIX_X; i++) {
@@ -186,9 +168,16 @@ void LevelCreator::save() {
 		file << "\n";
 	}
 	file.close();
+	std::fstream nullFile;
+	nullFile.open("Levels/nullLevel", std::ios::in);// plik zawieraj¹cy t¹ macierz
+	for (int i = 0; i < MATRIX_X; i++)
+		for (int j = 0; j < MATRIX_Y; j++)
+			nullFile >> nullMatrix[i][j];
+	customLevel.createMatrix(nullMatrix);
+	customLevel.createMatrix(levelMatrix);
 }
 
-int LevelCreator::run(RenderWindow &window) {
+int LevelCreator::run(RenderWindow &window, Level &customLevel) {
 	Event event;
 	keys.setPosition(Vector2f(0, window.getSize().y - keys.getGlobalBounds().height));
 	window.draw(background);
@@ -230,14 +219,13 @@ int LevelCreator::run(RenderWindow &window) {
 				break;
 			case(Keyboard::C):
 				for (int i = 0; i < MATRIX_X; i++)
-					for (int j = 0; j < MATRIX_Y; j++) {
+					for (int j = 0; j < MATRIX_Y; j++)
 						levelMatrix[i][j] = saveMatrix[i][j];
-					}
 				createMatrix("Levels/nullLevel");
 				break;
 			case(Keyboard::Escape):
-				save();
-				return 2;
+				save(customLevel);
+				return 0;
 				break;
 				// Place
 			case(Keyboard::E): 
@@ -263,5 +251,5 @@ int LevelCreator::run(RenderWindow &window) {
 			}
 		}
 	}
-	return 0;
+	return 2;
 }

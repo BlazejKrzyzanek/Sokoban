@@ -27,9 +27,6 @@
     <ClCompile Include="levels.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="pauseMenu.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="createLevel.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>

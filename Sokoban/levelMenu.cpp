@@ -2,21 +2,12 @@
 #include <sstream>
 
 LevelMenu::LevelMenu(int width, int height) {
-	if (!font.loadFromFile("arial.ttf")) {
-		// handle error
-	}
-	if (!backgroundTexture.loadFromFile("Textures/background.png")) {
-		// handle error
-	}
-	if (!squareTexture.loadFromFile("Textures/level.png")) {
-		// handle error
-	}
-	if (!squareSelectedTexture.loadFromFile("Textures/levelSelected.png")) {
-		// handle error
-	}
+	font.loadFromFile("arial.ttf");
+	backgroundTexture.loadFromFile("Textures/background.png");
+	squareTexture.loadFromFile("Textures/level.png");
+	squareSelectedTexture.loadFromFile("Textures/levelSelected.png");
 
 	background.setTexture(backgroundTexture);
-
 	levels[0].setTexture(squareSelectedTexture);
 	levelNumbers[0].setFont(font);
 	levelNumbers[0].setFillColor(Color::Red);
@@ -35,27 +26,23 @@ LevelMenu::LevelMenu(int width, int height) {
 		levelNumbers[i].setFillColor(Color::Black);
 		levelNumbers[i].setString(s);
 	}
-	for (int i = 0; i < NUMBER_OF_LEVELS; i++) {  
+	for (int i = 0; i < NUMBER_OF_LEVELS; i++) {
+		// arranging level buttons
 		float x, y;
-		if (i < NUMBER_OF_LEVELS / 3)
-			y = height / 4;
-		else if (i < 2 * NUMBER_OF_LEVELS / 3)
-			y = 2 * height / 4;
-		else
-			y = 3 * height / 4;
+		if (i < NUMBER_OF_LEVELS / 3) y = height / 4;
+		else if (i < 2 * NUMBER_OF_LEVELS / 3) y = 2 * height / 4;
+		else y = 3 * height / 4;
 
-		if (i < NUMBER_OF_LEVELS / 3)
-			x = (width / 5) * (i + 1);
-		else if (i < 2 * NUMBER_OF_LEVELS / 3)
-			x = (width / 5) * (i + 1 - NUMBER_OF_LEVELS / 3);
-		else
-			x = (width / 5) * (i + 1 - 2 * NUMBER_OF_LEVELS / 3);
-		levels[i].setPosition(Vector2f(x - levels[i].getGlobalBounds().width / 2, y - levels[i].getGlobalBounds().height / 2));
-		levelNumbers[i].setPosition(Vector2f(x - levelNumbers[i].getGlobalBounds().width / 2, y - levelNumbers[i].getGlobalBounds().height / 2));
+		if (i < NUMBER_OF_LEVELS / 3) x = (width / 5) * (i + 1);
+		else if (i < 2 * NUMBER_OF_LEVELS / 3) x = (width / 5) * (i + 1 - NUMBER_OF_LEVELS / 3);
+		else x = (width / 5) * (i + 1 - 2 * NUMBER_OF_LEVELS / 3);
+		levels[i].setPosition(Vector2f(x - levels[i].getGlobalBounds().width / 2,
+			y - levels[i].getGlobalBounds().height / 2));
+		levelNumbers[i].setPosition(Vector2f(x - levelNumbers[i].getGlobalBounds().width / 2,
+			y - levelNumbers[i].getGlobalBounds().height / 2));
 	}
 
 	selectedLevel = 0;
-
 }
 
 LevelMenu::~LevelMenu() {
@@ -102,15 +89,10 @@ void LevelMenu::moveDown() {
 	}
 }
 
-int LevelMenu::press() {
-	return selectedLevel;
-}
-
 void LevelMenu::draw(RenderWindow &window) {
 	window.draw(background);
 	for (auto x : levels) window.draw(x);
 	for (auto x : levelNumbers) window.draw(x);
-
 }
 
 int LevelMenu::run(RenderWindow &window) {
@@ -135,10 +117,10 @@ int LevelMenu::run(RenderWindow &window) {
 				moveDown();
 				break;
 			case(Keyboard::Space):
-				return press();
+				return selectedLevel;
 				break;
 			case(Keyboard::Return):
-				return press();
+				return selectedLevel;
 				break;
 			case(Keyboard::Escape):
 				return -2; // comes back to normal menu
