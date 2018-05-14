@@ -203,31 +203,31 @@ void Level::moveDown() {
 	}
 }
 
-void Level::read(int matrix[MATRIX_X][MATRIX_Y]) {
+void Level::read(int matrix[MATRIX_X][MATRIX_Y]) {						
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++) {
 			saveMatrix[i][j] = matrix[i][j];
 		}
 }
 
-void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
+void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {				// Creating matrix of sprites
 	background.setTexture(backgroundTexture);
 	congrats.setTexture(congratsTexture);
 	keys.setTexture(keysTexture);
 
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++) {
-			levelMatrix[i][j] = matrix[i][j];
-			saveMatrix[i][j] = matrix[i][j];
-			Vector2f pos = Vector2f(i * 50, j * 50);
+			levelMatrix[i][j] = matrix[i][j];							// Matrix for game (it is changing when playing)
+			saveMatrix[i][j] = matrix[i][j];							// Matrix for save (to draw after restarting level)
+			Vector2f pos = Vector2f(i * 50, j * 50);					// Position of sprite
 			switch (levelMatrix[i][j]) {
 			case 0:
-				gameMatrix[i][j].setTexture(emptyTexture);
+				gameMatrix[i][j].setTexture(emptyTexture);				// Showing background under level
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
 			case 1:
-				gameMatrix[i][j].setTexture(pathTexture);
+				gameMatrix[i][j].setTexture(pathTexture);				
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
 				break;
@@ -247,29 +247,28 @@ void Level::createMatrix(int matrix[MATRIX_X][MATRIX_Y]) {
 				gameMatrix[i][j].setPosition(pos);
 				break;
 			case 5:
-				levelMatrix[i][j] = 1;
+				levelMatrix[i][j] = 1;									// Draw path under player
 				gameMatrix[i][j].setTexture(pathTexture);
 				gameMatrix[i][j].setScale(0.5, 0.5);
 				gameMatrix[i][j].setPosition(pos);
-				player.setTexture(playerTexture);
+				player.setTexture(playerTexture);						
 				player.setScale(0.5, 0.5);
-				player.setPosition(pos);
+				player.setPosition(pos);								// Set player position and save it
 				position[0] = i;
 				position[1] = j;
 			default:
 				break;
 			}
 		}
-			
 }
 
 int Level::run(RenderWindow &window) {
-	Event event;
-	congrats.setPosition(Vector2f(window.getSize().x / 2 - congrats.getGlobalBounds().width / 2,
+	Event event;	
+	congrats.setPosition(Vector2f(window.getSize().x / 2 - congrats.getGlobalBounds().width / 2,		// Setting position of congrats to coenter
 		window.getSize().y / 2 - congrats.getGlobalBounds().height / 2));
 	keys.setPosition(Vector2f(0, window.getSize().y - keys.getGlobalBounds().height));
-	int state = gameState(window);
-	window.draw(background);
+	int state = gameState(window);								// Actual state of game (0 - running, 1- winning)
+	window.draw(background);									// Drawing sprites
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++)
 			window.draw(gameMatrix[i][j]);
@@ -279,10 +278,10 @@ int Level::run(RenderWindow &window) {
 	if (state == 0) {
 		while (window.pollEvent(event)) {
 			switch (event.type) {
-			case Event::Closed: // exit handling
+			case Event::Closed:									// exit handling
 				window.close();
 				break;
-			case Event::KeyReleased: // Moving
+			case Event::KeyReleased:   							// Moving
 				switch (event.key.code) {
 				case(Keyboard::Left):
 					moveLeft();
@@ -308,10 +307,10 @@ int Level::run(RenderWindow &window) {
 				case(Keyboard::S):
 					moveDown();
 					break;
-				case(Keyboard::R): // Restart
+				case(Keyboard::R):								// Restart
 					createMatrix(saveMatrix);
 					break;
-				case(Keyboard::Escape): // Pause menu
+				case(Keyboard::Escape):							// Pause menu
 					return 2;
 					break;
 				default:
@@ -320,13 +319,13 @@ int Level::run(RenderWindow &window) {
 			}
 		}
 	}
-	if (state == 1) {    // Winning
+	if (state == 1) {											// Winning
 		while (window.pollEvent(event)) {
 			switch (event.type) {
-			case Event::Closed: // exit handling
+			case Event::Closed:									// exit handling
 				window.close();
 				break;
-			case Event::KeyReleased: // Moving
+			case Event::KeyReleased:							// Moving
 				switch (event.key.code) {
 				case(Keyboard::Space):
 					return 1;
@@ -334,20 +333,20 @@ int Level::run(RenderWindow &window) {
 				case(Keyboard::Escape):
 					return 2;
 					break;
-				case(Keyboard::R):  // Restart
+				case(Keyboard::R):								// Restart
 					createMatrix(saveMatrix);
 					break;
 				default:
 					break;
 				}
 			}
-		}
+		 }
 		window.draw(congrats);
 		return 0;
 	}	
 }
 
-int Level::gameState(RenderWindow &window) { // Looking for "place"
+int Level::gameState(RenderWindow &window) {					// Looking for "place"
 	for (int i = 0; i < MATRIX_X; i++)
 		for (int j = 0; j < MATRIX_Y; j++)
 			if (levelMatrix[i][j] == 3)

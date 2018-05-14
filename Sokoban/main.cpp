@@ -74,7 +74,7 @@ int main(){
 				break;
 			}
 			case 4: {	
-				int state = pauseMenu.run(app);							// Which button was pressed
+				int state = pauseMenu.run(app);						// Which button was pressed
 				if (state == 1) screen = 3;							//  -> Level choosing menu
 				else if (state == 2) screen = 0;					//  -> Level creator
 				else if (state == 3) app.close();
