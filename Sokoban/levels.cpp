@@ -313,6 +313,9 @@ int Level::run(RenderWindow &window) {
 				case(Keyboard::Escape):							// Pause menu
 					return 2;
 					break;
+				case(Keyboard::N):								// Next level
+					return 1;
+					break;
 				default:
 					break;
 				}
@@ -335,6 +338,9 @@ int Level::run(RenderWindow &window) {
 					break;
 				case(Keyboard::R):								// Restart
 					createMatrix(saveMatrix);
+					break;
+				case(Keyboard::N):								// Next level
+					return 1;
 					break;
 				default:
 					break;
